@@ -38,14 +38,18 @@ class _AuthWidgetState extends State<AuthWidget> {
                     const Gap(16),
                     ElevatedButton(
                       onPressed: () {
-                        context.read<AuthBloc>().add(const AuthEvent.loginRequested());
+                        context
+                            .read<AuthBloc>()
+                            .add(AuthEvent.loginRequested(nameController.text, passwordController.text));
                       },
                       child: const Text('Login'),
                     ),
                     const Gap(16),
                     OutlinedButton(
                       onPressed: () {
-                        context.read<AuthBloc>().add(const AuthEvent.registerRequested());
+                        context
+                            .read<AuthBloc>()
+                            .add(AuthEvent.registerRequested(nameController.text, passwordController.text));
                       },
                       child: const Text('Register'),
                     ),
