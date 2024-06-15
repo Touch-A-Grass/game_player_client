@@ -5,6 +5,8 @@ import 'package:game_player_client/presentation/screens/auth/auth_screen.dart';
 import 'package:game_player_client/presentation/screens/home/home_screen.dart';
 
 class RootPageMapper extends PageMapper<RootNavigationState> {
+  const RootPageMapper();
+
   @override
   Page map(BuildContext context, RootNavigationState state) => switch (state) {
         AuthState _ => page(const AuthScreen()),

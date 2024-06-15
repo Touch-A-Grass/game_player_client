@@ -24,15 +24,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        // Storages
         RepositoryProvider.value(value: tokenStorage),
         RepositoryProvider(create: (context) => UserStorage()),
+
+        // Repositories
         RepositoryProvider(create: (context) => AuthRepository(context.read(), context.read())),
       ],
       child: BlocProvider(
         create: (context) => RootNavigationCubit(context.read()),
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
-          routerDelegate: AppRouteDelegate<RootNavigationCubit, RootNavigationState>(pageMapper: RootPageMapper()),
+          routerDelegate:
+              AppRouteDelegate<RootNavigationCubit, RootNavigationState>(pageMapper: const RootPageMapper()),
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,

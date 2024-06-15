@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 abstract class PageMapper<S> {
+  const PageMapper();
+
   Page map(BuildContext context, S state);
 
   Page page(Widget screen, {bool fullscreenDialog = false}) {

@@ -18,6 +18,10 @@ class AuthRepository {
     await _tokenStorage.setToken('token');
   }
 
+  Future<void> logout() async {
+    await _tokenStorage.clear();
+  }
+
   Future<void> fetchUser() async {
     await Future.delayed(const Duration(seconds: 2));
     _userStorage.set(
@@ -27,4 +31,6 @@ class AuthRepository {
       ),
     );
   }
+
+  Stream<User?> watchUser() => _userStorage.watch();
 }
