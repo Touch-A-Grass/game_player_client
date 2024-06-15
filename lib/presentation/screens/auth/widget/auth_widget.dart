@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_player_client/presentation/screens/auth/bloc/auth_bloc.dart';
+import 'package:game_player_client/presentation/widgets/app_insets.dart';
 import 'package:game_player_client/presentation/widgets/gap.dart';
 
 class AuthWidget extends StatefulWidget {
@@ -22,39 +23,69 @@ class _AuthWidgetState extends State<AuthWidget> {
           body: Stack(
             fit: StackFit.expand,
             children: [
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: nameController,
-                      decoration: const InputDecoration(labelText: 'Name'),
+              CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: const AppInsets.topHorizontal(16),
+                    sliver: SliverToBoxAdapter(
+                      child: TextFormField(
+                        enabled: !state.isLoading,
+                        controller: nameController,
+                        decoration: const InputDecoration(labelText: 'Name'),
+                      ),
                     ),
-                    const Gap(16),
-                    TextFormField(
-                      controller: passwordController,
-                      decoration: const InputDecoration(labelText: 'Password'),
-                      obscureText: true,
+                  ),
+                  SliverPadding(
+                    padding: const AppInsets.topHorizontal(16),
+                    sliver: SliverToBoxAdapter(
+                      child: TextFormField(
+                        enabled: !state.isLoading,
+                        controller: passwordController,
+                        decoration: const InputDecoration(labelText: 'Password'),
+                        obscureText: true,
+                      ),
                     ),
-                    const Gap(16),
-                    ElevatedButton(
-                      onPressed: () {
-                        context
-                            .read<AuthBloc>()
-                            .add(AuthEvent.loginRequested(nameController.text, passwordController.text));
-                      },
-                      child: const Text('Login'),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    sliver: SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Column(
+                        children: [
+                          const Spacer(),
+                          const Gap(16),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: state.isLoading
+                                  ? null
+                                  : () {
+                                      context
+                                          .read<AuthBloc>()
+                                          .add(AuthEvent.loginRequested(nameController.text, passwordController.text));
+                                    },
+                              child: const Text('Login'),
+                            ),
+                          ),
+                          const Gap(16),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              onPressed: state.isLoading
+                                  ? null
+                                  : () {
+                                      context.read<AuthBloc>().add(
+                                          AuthEvent.registerRequested(nameController.text, passwordController.text));
+                                    },
+                              child: const Text('Register'),
+                            ),
+                          ),
+                          const Gap(16),
+                        ],
+                      ),
                     ),
-                    const Gap(16),
-                    OutlinedButton(
-                      onPressed: () {
-                        context
-                            .read<AuthBloc>()
-                            .add(AuthEvent.registerRequested(nameController.text, passwordController.text));
-                      },
-                      child: const Text('Register'),
-                    ),
-                  ],
-                ),
+                  )
+                ],
               ),
               if (state.isLoading) const Center(child: CircularProgressIndicator()),
             ],

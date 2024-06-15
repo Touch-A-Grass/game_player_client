@@ -1,26 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_player_client/data/repository/auth_repository.dart';
+import 'package:game_player_client/data/storage/token_storage.dart';
+import 'package:game_player_client/data/storage/user_storage.dart';
 import 'package:game_player_client/presentation/navigation/common/app_route_delegate.dart';
 import 'package:game_player_client/presentation/navigation/root/root_navigation_cubit.dart';
 import 'package:game_player_client/presentation/navigation/root/root_navigation_state.dart';
 import 'package:game_player_client/presentation/navigation/root/root_page_mapper.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  final tokenStorage = TokenStorage();
+  await tokenStorage.ensureInitialized();
+
+  runApp(MyApp(tokenStorage: tokenStorage));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final TokenStorage tokenStorage;
+
+  const MyApp({super.key, required this.tokenStorage});
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(create: (context) => AuthRepository()),
+        RepositoryProvider.value(value: tokenStorage),
+        RepositoryProvider(create: (context) => UserStorage()),
+        RepositoryProvider(create: (context) => AuthRepository(context.read(), context.read())),
       ],
       child: BlocProvider(
-        create: (context) => RootNavigationCubit(),
+        create: (context) => RootNavigationCubit(context.read()),
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
           routerDelegate: AppRouteDelegate<RootNavigationCubit, RootNavigationState>(pageMapper: RootPageMapper()),
