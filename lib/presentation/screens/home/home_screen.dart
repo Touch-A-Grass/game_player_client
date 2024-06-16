@@ -12,7 +12,7 @@ class HomeScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<HomeNavigationCubit>(create: (context) => HomeNavigationCubit()),
-        BlocProvider<HomeBloc>(create: (context) => HomeBloc()),
+        BlocProvider<HomeBloc>(create: (context) => HomeBloc(context.read())..add(const HomeEvent.started())),
       ],
       child: const HomeWidget(),
     );

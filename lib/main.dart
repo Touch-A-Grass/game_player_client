@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_player_client/data/repository/auth_repository.dart';
+import 'package:game_player_client/data/repository/lobby_repository.dart';
 import 'package:game_player_client/data/storage/token_storage.dart';
 import 'package:game_player_client/data/storage/user_storage.dart';
 import 'package:game_player_client/presentation/navigation/common/app_route_delegate.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
 
         // Repositories
         RepositoryProvider(create: (context) => AuthRepository(context.read(), context.read())),
+        RepositoryProvider(create: (context) => LobbyRepository()),
       ],
       child: BlocProvider(
         create: (context) => RootNavigationCubit(context.read()),
