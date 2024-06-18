@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_player_client/data/repository/auth_repository.dart';
@@ -10,23 +11,42 @@ import 'package:game_player_client/presentation/navigation/root/root_navigation_
 import 'package:game_player_client/presentation/navigation/root/root_page_mapper.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   final tokenStorage = TokenStorage();
   await tokenStorage.ensureInitialized();
-
-  runApp(MyApp(tokenStorage: tokenStorage));
+  final brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
+  runApp(MyApp(tokenStorage: tokenStorage, initialBrightness: brightness));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final TokenStorage tokenStorage;
+  final Brightness initialBrightness;
 
-  const MyApp({super.key, required this.tokenStorage});
+  const MyApp({
+    super.key,
+    required this.tokenStorage,
+    required this.initialBrightness,
+  });
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Brightness brightness;
+
+  @override
+  void initState() {
+    super.initState();
+    brightness = widget.initialBrightness;
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
         // Storages
-        RepositoryProvider.value(value: tokenStorage),
+        RepositoryProvider.value(value: widget.tokenStorage),
         RepositoryProvider(create: (context) => UserStorage()),
 
         // Repositories
@@ -35,13 +55,28 @@ class MyApp extends StatelessWidget {
       ],
       child: BlocProvider(
         create: (context) => RootNavigationCubit(context.read()),
-        child: MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          routerDelegate:
-              AppRouteDelegate<RootNavigationCubit, RootNavigationState>(pageMapper: const RootPageMapper()),
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
+        child: DynamicColorBuilder(
+          builder: (lightDynamic, darkDynamic) => MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            routerDelegate: AppRouteDelegate<RootNavigationCubit, RootNavigationState>(
+              pageMapper: const RootPageMapper(),
+            ),
+            theme: ThemeData(
+              colorScheme: switch (brightness) {
+                Brightness.light => lightDynamic ??
+                    ColorScheme.fromSeed(
+                      seedColor: Colors.deepPurple,
+                      brightness: Brightness.light,
+                    ),
+                Brightness.dark => darkDynamic ??
+                    ColorScheme.fromSeed(
+                      seedColor: Colors.deepPurple,
+                      brightness: Brightness.dark,
+                    ),
+              },
+              brightness: brightness,
+              useMaterial3: true,
+            ),
           ),
         ),
       ),

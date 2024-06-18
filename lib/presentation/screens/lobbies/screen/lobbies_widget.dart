@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_player_client/presentation/screens/lobbies/bloc/lobbies_bloc.dart';
@@ -51,8 +52,7 @@ class _LobbiesWidgetState extends State<LobbiesWidget> {
                                   onChanged: (code) => context.read<LobbiesBloc>().add(LobbiesEvent.codeChanged(code)),
                                   textInputAction: state.isValidCode ? TextInputAction.done : TextInputAction.none,
                                   keyboardType: TextInputType.text,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  separatorBuilder: (context, index) => const SizedBox(width: 16),
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   onCompleted: (code) =>
                                       context.read<LobbiesBloc>().add(const LobbiesEvent.joinRequested()),
                                   onSubmitted: (code) =>
@@ -61,7 +61,9 @@ class _LobbiesWidgetState extends State<LobbiesWidget> {
                                     shape: PinCodeFieldShape.box,
                                     borderRadius: const BorderRadius.all(Radius.circular(8)),
                                     activeColor: Theme.of(context).colorScheme.secondary,
-                                    selectedColor: Colors.lightGreen,
+                                    selectedColor: Colors.green.harmonizeWith(
+                                      Theme.of(context).colorScheme.primary,
+                                    ),
                                     inactiveColor: Theme.of(context).colorScheme.primary,
                                     disabledColor: Colors.transparent,
                                   ),

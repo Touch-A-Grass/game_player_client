@@ -201,6 +201,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.4.3+1"
+  dynamic_color:
+    dependency: "direct main"
+    description:
+      name: dynamic_color
+      sha256: eae98052fa6e2826bdac3dd2e921c6ce2903be15c6b7f8b6d8a5d49b5086298d
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.7.0"
   fake_async:
     dependency: transitive
     description:
@@ -424,6 +432,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  mobile_scanner:
+    dependency: "direct main"
+    description:
+      name: mobile_scanner
+      sha256: b8c0e9afcfd52534f85ec666f3d52156f560b5e6c25b1e3d4fe2087763607926
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.1"
   nested:
     dependency: transitive
     description:
