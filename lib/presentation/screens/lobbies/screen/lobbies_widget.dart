@@ -2,8 +2,10 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_player_client/presentation/screens/lobbies/bloc/lobbies_bloc.dart';
+import 'package:game_player_client/presentation/screens/qr_scanner/qr_scanner_screen.dart';
 import 'package:game_player_client/presentation/widgets/app_insets.dart';
 import 'package:game_player_client/presentation/widgets/gap.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class LobbiesWidget extends StatefulWidget {
@@ -99,7 +101,18 @@ class _LobbiesWidgetState extends State<LobbiesWidget> {
                               Text('Scan QR', style: Theme.of(context).textTheme.titleMedium),
                               const Gap(16),
                               IconButton(
-                                onPressed: () {},
+                                onPressed: () async {
+                                  final code = await _scanLobbyQr(context);
+                                  if (!context.mounted || code == null) return;
+                                  if (code.length != state.codeLength) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Invalid code')),
+                                    );
+                                    return;
+                                  }
+                                  context.read<LobbiesBloc>().add(LobbiesEvent.codeChanged(code));
+                                  context.read<LobbiesBloc>().add(const LobbiesEvent.joinRequested());
+                                },
                                 icon: const Icon(
                                   Icons.qr_code_scanner,
                                   size: 64,
@@ -119,5 +132,13 @@ class _LobbiesWidgetState extends State<LobbiesWidget> {
         ),
       ),
     );
+  }
+
+  Future<String?> _scanLobbyQr(BuildContext context) async {
+    final permission = await Permission.camera.request();
+    if (!permission.isGranted || !context.mounted) {
+      return null;
+    }
+    return await showModalBottomSheet(context: context, builder: (_) => const QrScannerScreen());
   }
 }
