@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_player_client/presentation/screens/profile/bloc/profile_bloc.dart';
+import 'package:game_player_client/presentation/widgets/app_insets.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({super.key});
@@ -14,32 +15,59 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileBloc, ProfileState>(
-      builder: (context, state) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Profile'),
-          actions: [
-            IconButton(
-              onPressed: () {
-                context.read<ProfileBloc>().add(const ProfileEvent.logout());
-              },
-              icon: const Icon(Icons.logout),
-            ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              BlocListener<ProfileBloc, ProfileState>(
-                listenWhen: (previous, current) => previous.username != current.username,
-                listener: (context, state) {
-                  nameController.text = state.username;
+    return BlocListener<ProfileBloc, ProfileState>(
+      listenWhen: (prev, curr) => prev.error != curr.error,
+      listener: (context, state) {
+        if (state.error != null) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error!)));
+        }
+      },
+      child: BlocBuilder<ProfileBloc, ProfileState>(
+        builder: (context, state) => Scaffold(
+          appBar: AppBar(
+            title: const Text('Profile'),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  context.read<ProfileBloc>().add(const ProfileEvent.logout());
                 },
-                child: TextFormField(
-                  controller: nameController,
-                  decoration: const InputDecoration(labelText: 'Username', border: OutlineInputBorder()),
-                  readOnly: true,
+                icon: const Icon(Icons.logout),
+              ),
+            ],
+          ),
+          body: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const AppInsets.topHorizontal(16),
+                sliver: SliverToBoxAdapter(
+                  child: BlocListener<ProfileBloc, ProfileState>(
+                    listenWhen: (previous, current) => previous.username != current.username,
+                    listener: (context, state) {
+                      nameController.text = state.username;
+                    },
+                    child: TextFormField(
+                      controller: nameController,
+                      decoration: const InputDecoration(labelText: 'Username', border: OutlineInputBorder()),
+                      onChanged: (value) => context.read<ProfileBloc>().add(ProfileEvent.userNameChanged(value)),
+                    ),
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.all(16),
+                sliver: SliverFillRemaining(
+                  child: Column(
+                    children: [
+                      const Spacer(),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => context.read<ProfileBloc>().add(const ProfileEvent.saveRequested()),
+                          child: const Text('Save'),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

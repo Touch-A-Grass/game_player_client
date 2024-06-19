@@ -25,6 +25,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> with SubscriptionBloc
       ));
     });
 
+    on<_UsernameChanged>((event, emit) {
+      emit(state.copyWith(username: event.username));
+    });
+
+    on<_SaveRequested>((event, emit) async {
+      emit(state.copyWith(isSavingUser: true));
+      try {
+        await _authRepository.updateUser(state.username);
+      } catch (e) {
+        emit(state.copyWith(error: e.toString()));
+      }
+      emit(state.copyWith(isSavingUser: false, error: null));
+    });
+
     on<_Logout>((event, emit) async {
       await _authRepository.logout();
     });

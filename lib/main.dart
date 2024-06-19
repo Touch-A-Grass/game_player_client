@@ -1,6 +1,9 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:game_player_client/data/api/interceptor/auth_interceptor.dart';
+import 'package:game_player_client/data/api/service/dio_factory.dart';
+import 'package:game_player_client/data/api/service/game_client.dart';
 import 'package:game_player_client/data/repository/auth_repository.dart';
 import 'package:game_player_client/data/repository/lobby_repository.dart';
 import 'package:game_player_client/data/storage/token_storage.dart';
@@ -49,8 +52,12 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider.value(value: widget.tokenStorage),
         RepositoryProvider(create: (context) => UserStorage()),
 
+        // Api
+        RepositoryProvider(create: (context) => AuthInterceptor(context.read())),
+        RepositoryProvider(create: (context) => GameClient(createAppDio(context.read()))),
+
         // Repositories
-        RepositoryProvider(create: (context) => AuthRepository(context.read(), context.read())),
+        RepositoryProvider(create: (context) => AuthRepository(context.read(), context.read(), context.read())),
         RepositoryProvider(create: (context) => LobbyRepository()),
       ],
       child: BlocProvider(

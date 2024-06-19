@@ -7,7 +7,7 @@ part 'auth_request.g.dart';
 @freezed
 class AuthRequest with _$AuthRequest {
   const factory AuthRequest({
-    required String username,
+    required String login,
     required String password,
   }) = _AuthRequest;
 

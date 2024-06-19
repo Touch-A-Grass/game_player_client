@@ -17,15 +17,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(isLoading: true));
       try {
         await _authRepository.login(event.username, event.password);
-      } catch (_) {}
+      } catch (_) {
+        emit(state.copyWith(error: 'Failed to login'));
+      }
       emit(state.copyWith(isLoading: false));
     }, transformer: droppable());
 
-    on<_RegisterRequested>((event, emit) {
+    on<_RegisterRequested>((event, emit) async {
       emit(const AuthState(isLoading: true));
       try {
-        _authRepository.register(event.username, event.password);
-      } catch (_) {}
+        await _authRepository.register(event.username, event.password);
+      } catch (_) {
+        emit(const AuthState(error: 'Failed to register'));
+      }
       emit(const AuthState(isLoading: false));
     }, transformer: droppable());
   }

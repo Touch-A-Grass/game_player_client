@@ -7,4 +7,8 @@ class ProfileEvent with _$ProfileEvent {
   const factory ProfileEvent.logout() = _Logout;
 
   const factory ProfileEvent.userChanged(User? user) = _UserChanged;
+
+  const factory ProfileEvent.userNameChanged(String username) = _UsernameChanged;
+
+  const factory ProfileEvent.saveRequested() = _SaveRequested;
 }
