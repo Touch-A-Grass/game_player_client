@@ -16,3 +16,7 @@ class AuthState extends RootNavigationState {
 class HomeState extends RootNavigationState {
   const HomeState(super.prevState);
 }
+
+class GameState extends RootNavigationState {
+  const GameState(super.prevState);
+}
