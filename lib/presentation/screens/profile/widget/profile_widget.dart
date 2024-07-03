@@ -24,19 +24,20 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       },
       child: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) => Scaffold(
-          appBar: AppBar(
-            title: const Text('Profile'),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  context.read<ProfileBloc>().add(const ProfileEvent.logout());
-                },
-                icon: const Icon(Icons.logout),
-              ),
-            ],
-          ),
           body: CustomScrollView(
             slivers: [
+              SliverAppBar(
+                title: const Text('Profile'),
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      context.read<ProfileBloc>().add(const ProfileEvent.logout());
+                    },
+                    icon: const Icon(Icons.logout),
+                  ),
+                ],
+                pinned: true,
+              ),
               SliverPadding(
                 padding: const AppInsets.topHorizontal(16),
                 sliver: SliverToBoxAdapter(
@@ -53,21 +54,23 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   ),
                 ),
               ),
-              SliverPadding(
-                padding: const EdgeInsets.all(16),
-                sliver: SliverFillRemaining(
-                  child: Column(
-                    children: [
-                      const Spacer(),
-                      SizedBox(
+              SliverFillRemaining(
+                child: Column(
+                  children: [
+                    const Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () => context.read<ProfileBloc>().add(const ProfileEvent.saveRequested()),
+                          onPressed: () {
+                            context.read<ProfileBloc>().add(const ProfileEvent.saveRequested());
+                          },
                           child: const Text('Save'),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],

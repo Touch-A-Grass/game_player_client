@@ -57,11 +57,14 @@ class _MyAppState extends State<MyApp> {
         RepositoryProvider(create: (context) => GameClient(createAppDio(context.read()))),
 
         // Repositories
-        RepositoryProvider(create: (context) => AuthRepository(context.read(), context.read(), context.read())),
-        RepositoryProvider(create: (context) => LobbyRepository()),
+        RepositoryProvider(
+          create: (context) => AuthRepository(context.read(), context.read(), context.read()),
+          lazy: false,
+        ),
+        RepositoryProvider(create: (context) => LobbyRepository(context.read())),
       ],
       child: BlocProvider(
-        create: (context) => RootNavigationCubit(context.read()),
+        create: (context) => RootNavigationCubit(context.read(), context.read()),
         child: DynamicColorBuilder(
           builder: (lightDynamic, darkDynamic) => MaterialApp.router(
             debugShowCheckedModeBanner: false,

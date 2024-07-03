@@ -1,4 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:game_player_client/data/models/character.dart';
+import 'package:game_player_client/data/models/user.dart';
 
 part 'lobby.freezed.dart';
 
@@ -13,6 +15,8 @@ class Lobby with _$Lobby {
     required int maxPlayers,
     required int playersCount,
     required String owner,
+    required List<User> users,
+    required List<Character> characters,
   }) = _Lobby;
 
   factory Lobby.fromJson(Map<String, dynamic> json) => _$LobbyFromJson(json);
