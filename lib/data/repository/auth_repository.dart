@@ -11,7 +11,9 @@ class AuthRepository {
   final UserStorage _userStorage;
   final GameClient _api;
 
-  AuthRepository(this._tokenStorage, this._userStorage, this._api);
+  AuthRepository(this._tokenStorage, this._userStorage, this._api) {
+    fetchUser();
+  }
 
   Future<void> login(String login, String password) async {
     final response = await _api.login(AuthRequest(login: login, password: password));
