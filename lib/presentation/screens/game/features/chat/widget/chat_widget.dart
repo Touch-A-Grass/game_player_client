@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:game_player_client/data/storage/user_storage.dart';
 import 'package:game_player_client/presentation/screens/game/features/chat/bloc/chat_bloc.dart';
 import 'package:game_player_client/presentation/screens/game/features/chat/widget/components/chat_message.dart';
 
@@ -22,11 +23,13 @@ class _ChatWidgetState extends State<ChatWidget> {
             child: ListView.separated(
               reverse: true,
               padding: const EdgeInsets.all(16),
-              itemBuilder: (context, index) => ChatMessage(
-                message: state.messages[index],
-                // isOwnMessage: state.messages[index].user.username == context.read<UserStorage>().get()?.username,
-                isOwnMessage: true,
-              ),
+              itemBuilder: (context, index) {
+                final isOwnMessage = state.messages[index].user.username == context.read<UserStorage>().get()?.username;
+                return ChatMessage(
+                  message: state.messages[index],
+                  isOwnMessage: isOwnMessage,
+                );
+              },
               separatorBuilder: (context, index) => const SizedBox(height: 8),
               itemCount: state.messages.length,
             ),

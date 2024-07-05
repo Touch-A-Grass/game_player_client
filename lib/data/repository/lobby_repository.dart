@@ -1,18 +1,31 @@
-import 'package:game_player_client/data/models/attribute.dart';
+import 'dart:convert';
+
+import 'package:game_player_client/data/api/service/live_client.dart';
 import 'package:game_player_client/data/models/character.dart';
 import 'package:game_player_client/data/models/lobby.dart';
 import 'package:game_player_client/data/models/message.dart';
 import 'package:game_player_client/data/models/roll.dart';
-import 'package:game_player_client/data/models/skill.dart';
 import 'package:game_player_client/data/models/user.dart';
 import 'package:game_player_client/data/storage/user_storage.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:uuid/uuid.dart';
 
 class LobbyRepository {
   final UserStorage _userStorage;
+  final LiveClient _liveClient;
 
-  LobbyRepository(this._userStorage);
+  LobbyRepository(this._userStorage, this._liveClient) {
+    _liveClient.lobby.listen((lobby) {
+      _lobby.add(lobby);
+    });
+
+    _liveClient.roll.listen((roll) {
+      _roll.add(roll);
+    });
+
+    _liveClient.message.listen((message) {
+      _messages.add([..._messages.value, message]);
+    });
+  }
 
   final BehaviorSubject<Lobby?> _lobby = BehaviorSubject<Lobby?>.seeded(null);
   final BehaviorSubject<List<Message>> _messages = BehaviorSubject<List<Message>>.seeded([]);
@@ -30,79 +43,23 @@ class LobbyRepository {
       .map((lobby) => lobby?.characters.firstWhere((character) => character.user == _userStorage.get()!.username));
 
   Future<void> join(String code) async {
-    await Future.delayed(const Duration(seconds: 2));
-    final lobby = Lobby(
-      id: const Uuid().v4(),
-      name: 'The Witcher 3: Wild Hunt',
-      code: code,
-      maxPlayers: 4,
-      playersCount: 1,
-      owner: const Uuid().v4(),
-      users: [_userStorage.get()!],
-      characters: [
-        Character(
-          id: const Uuid().v4(),
-          name: 'Witcher',
-          description: 'An old witcher from the witcher 3, with some new skills and attributes!',
-          user: _userStorage.get()!.username,
-          skills: const [
-            Skill(
-              name: 'Witchery',
-              value: 5,
-              attribute: 'Intelligence',
-            ),
-            Skill(
-              name: 'Crafting',
-              value: 5,
-              attribute: 'Intelligence',
-            ),
-            Skill(
-              name: 'Magic',
-              value: 5,
-              attribute: 'Intelligence',
-            ),
-            Skill(
-              name: 'Stealth',
-              value: 5,
-              attribute: 'Dexterity',
-            ),
-          ],
-          attributes: const [
-            Attribute(
-              name: 'Gender',
-              value: 'Male',
-              type: AttributeType.string,
-            ),
-            Attribute(
-              name: 'Strength',
-              value: '5',
-              type: AttributeType.int,
-            ),
-            Attribute(
-              name: 'Dexterity',
-              value: '5',
-              type: AttributeType.int,
-            ),
-            Attribute(
-              name: 'Intelligence',
-              value: '5',
-              type: AttributeType.int,
-            ),
-          ],
-        )
-      ],
-    );
-    _lobby.add(lobby);
+    await _liveClient.connect(code);
   }
 
   Future<void> sendMessage(String message) async {
+    _liveClient.send(
+      jsonEncode(
+        {
+          'type': 'message',
+          'message': message,
+        },
+      ),
+    );
     final newMessage = Message(
       text: message,
       user: _userStorage.get()!.username,
     );
     _messages.add([newMessage, ..._messages.value]);
-    await Future.delayed(const Duration(seconds: 2));
-    _roll.add(const Roll(dices: [10, 15]));
   }
 
   Future<void> completeRoll(RollResult result) async {}

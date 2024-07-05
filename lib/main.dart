@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:game_player_client/data/api/interceptor/auth_interceptor.dart';
 import 'package:game_player_client/data/api/service/dio_factory.dart';
 import 'package:game_player_client/data/api/service/game_client.dart';
+import 'package:game_player_client/data/api/service/live_client.dart';
 import 'package:game_player_client/data/repository/auth_repository.dart';
 import 'package:game_player_client/data/repository/lobby_repository.dart';
 import 'package:game_player_client/data/storage/token_storage.dart';
@@ -55,13 +56,14 @@ class _MyAppState extends State<MyApp> {
         // Api
         RepositoryProvider(create: (context) => AuthInterceptor(context.read())),
         RepositoryProvider(create: (context) => GameClient(createAppDio(context.read()))),
+        RepositoryProvider(create: (context) => LiveClient(context.read(), context.read())),
 
         // Repositories
         RepositoryProvider(
           create: (context) => AuthRepository(context.read(), context.read(), context.read()),
           lazy: false,
         ),
-        RepositoryProvider(create: (context) => LobbyRepository(context.read())),
+        RepositoryProvider(create: (context) => LobbyRepository(context.read(), context.read())),
       ],
       child: BlocProvider(
         create: (context) => RootNavigationCubit(context.read(), context.read()),

@@ -13,29 +13,44 @@ class ChatMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: isOwnMessage ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surfaceContainer,
-      ),
-      child: Column(
-        crossAxisAlignment: isOwnMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+    return LayoutBuilder(
+      builder: (context, constraints) => Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: isOwnMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
-          Text(
-            message.user.username,
-            style: TextStyle(
-              fontSize: 12,
-              color: isOwnMessage ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface,
+          Container(
+            constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.7),
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color:
+                  isOwnMessage ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surfaceContainer,
+              border: isOwnMessage ? null : Border.all(color: Theme.of(context).colorScheme.outline),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            message.text,
-            textAlign: isOwnMessage ? TextAlign.end : TextAlign.start,
-            style: TextStyle(
-              fontSize: 16,
-              color: isOwnMessage ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface,
+            child: Column(
+              crossAxisAlignment: isOwnMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              children: [
+                Text(
+                  message.user.username,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isOwnMessage
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  message.text,
+                  textAlign: isOwnMessage ? TextAlign.end : TextAlign.start,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: isOwnMessage
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
