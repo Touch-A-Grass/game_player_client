@@ -67,5 +67,8 @@ class LobbyRepository {
   Future<void> leave() async {
     _lobby.add(null);
     _messages.add([]);
+    try {
+      _liveClient.close();
+    } catch (_) {}
   }
 }

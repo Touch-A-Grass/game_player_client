@@ -69,50 +69,30 @@ class LiveClient {
       characters: [
         Character(
           id: const Uuid().v4(),
-          name: 'Witcher',
-          description: 'An old witcher from the witcher 3, with some new skills and attributes!',
+          name: 'Ведьмак',
+          description: 'Ведьмакууу заплатите чеканной монетой, чеканной монетой, чеканной монетой, чеканной монетой...',
           user: _userStorage.get()!.username,
           skills: const [
             Skill(
-              name: 'Witchery',
+              name: 'Кража',
               value: 5,
-              attribute: 'Intelligence',
-            ),
-            Skill(
-              name: 'Crafting',
-              value: 5,
-              attribute: 'Intelligence',
-            ),
-            Skill(
-              name: 'Magic',
-              value: 5,
-              attribute: 'Intelligence',
-            ),
-            Skill(
-              name: 'Stealth',
-              value: 5,
-              attribute: 'Dexterity',
+              attribute: 'Ловкость',
             ),
           ],
           attributes: const [
             Attribute(
-              name: 'Gender',
-              value: 'Male',
-              type: AttributeType.string,
-            ),
-            Attribute(
-              name: 'Strength',
-              value: '5',
+              name: 'Ловкость',
+              value: '4',
               type: AttributeType.int,
             ),
             Attribute(
-              name: 'Dexterity',
-              value: '5',
-              type: AttributeType.int,
+              name: 'Ошеломление',
+              value: 'true',
+              type: AttributeType.bool,
             ),
             Attribute(
-              name: 'Intelligence',
-              value: '5',
+              name: 'Сила',
+              value: '8',
               type: AttributeType.int,
             ),
           ],
@@ -122,12 +102,12 @@ class LiveClient {
 
     _lobby.add(lobby);
 
-    Timer(const Duration(seconds: 10), () {
-      _roll.add(const Roll(dices: [6, 20, 20]));
+    Timer(const Duration(seconds: 15), () {
+      _roll.add(const Roll(dices: [21, 21, 21, 21, 21, 21]));
     });
 
-    Timer(const Duration(seconds: 2), () {
-      _message.add(const Message(text: 'hello', user: 'Fedmog1lnkv'));
+    Timer(const Duration(seconds: 8), () {
+      _message.add(const Message(text: 'привет шпана', user: 'Fedmog1lnkv'));
     });
   }
 
