@@ -111,7 +111,6 @@ class _LobbiesWidgetState extends State<LobbiesWidget> {
                                     return;
                                   }
                                   context.read<LobbiesBloc>().add(LobbiesEvent.codeChanged(code));
-                                  context.read<LobbiesBloc>().add(const LobbiesEvent.joinRequested());
                                 },
                                 icon: const Icon(
                                   Icons.qr_code_scanner,

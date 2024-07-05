@@ -23,6 +23,12 @@ class _GameWidgetState extends State<GameWidget> with TickerProviderStateMixin {
   }
 
   @override
+  void dispose() {
+    rollAnimation.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<GameBloc, GameState>(
       listenWhen: (prev, curr) => prev.roll != curr.roll,
